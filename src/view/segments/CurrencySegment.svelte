@@ -23,7 +23,10 @@
 </script>
 
 <span class="currency-segment">
-    gp: {totalGP.toFixed(1)}
+    <span class="icon" style="background-image: url(icons/svg/coins.svg)"></span> 
+    <span>
+    {totalGP.toFixed(1)}
+    </span>
 </span>
 
 <style lang="scss">
@@ -31,5 +34,8 @@
         font-size: 18px !important;
         padding: 6px;
         white-space: nowrap;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
     }
 </style>

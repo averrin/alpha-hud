@@ -1,9 +1,15 @@
 import { SvelteApplication }  from '@typhonjs-fvtt/runtime/svelte/application';
 
 import SelectedWidget          from './SelectedWidget.svelte';
+import WidgetApp          from '../Widget.js';
 
-export default class SelectedWidgetApp extends SvelteApplication
+export default class SelectedWidgetApp extends WidgetApp
 {
+
+   constructor(options)
+   {
+      super({widgetId: "selected"});
+    }
    /**
     * Default Application options
     *
@@ -19,12 +25,14 @@ export default class SelectedWidgetApp extends SvelteApplication
          minimizable: false,
          headerButtonNoClose: true,
          popOut: false,
+        zIndex: 95,
 
          svelte: {
             class: SelectedWidget,
             target: document.body,
-            props: {
-                tokens: null,
+            props: function()
+            {
+               return { settingStore: this.getPositionStore(), tokens: null };
             }
          }
       });
@@ -32,6 +40,7 @@ export default class SelectedWidgetApp extends SvelteApplication
 
     onUpdateTokens()
     {
+            if(!this.enabled) return;
         this.svelte.applicationShell.tokens = canvas.tokens.controlled;
     }
 }

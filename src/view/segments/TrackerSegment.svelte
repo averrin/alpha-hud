@@ -44,9 +44,6 @@
 	    max={tracker.completionAt}
 	    color={color}
     />
-    <span class="info-container">
-        {tracker.progress}/{tracker.completionAt}
-    </span>
     <button
         on:click|preventDefault|stopPropagation={increase}
         on:pointerdown|preventDefault|stopPropagation={()=>null}

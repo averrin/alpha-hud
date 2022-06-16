@@ -1,9 +1,14 @@
 import { SvelteApplication }  from '@typhonjs-fvtt/runtime/svelte/application';
 
 import CharactersWidget          from './CharactersWidget.svelte';
+import WidgetApp          from '../Widget.js';
 
-export default class CharactersWidgetApp extends SvelteApplication
+export default class CharactersWidgetApp extends WidgetApp
 {
+   constructor(options)
+   {
+      super({widgetId: "characters"});
+    }
    /**
     * Default Application options
     *
@@ -19,19 +24,38 @@ export default class CharactersWidgetApp extends SvelteApplication
          minimizable: false,
          headerButtonNoClose: true,
          popOut: false,
+        zIndex: 95,
 
          svelte: {
             class: CharactersWidget,
             target: document.body,
-            props: {
-                tokens: null,
+            props: function()
+            {
+               return { settingStore: this.getPositionStore(), characters: null };
             }
          }
       });
    }
 
+   isLiving(token) {
+    return getProperty(token?.document?.actor.getRollData(), "attributes.hp.max") > 0;
+   }
+
     onUpdateTokens()
     {
-        this.svelte.applicationShell.tokens = canvas.tokens.ownedTokens;
+            if(!this.enabled) return;
+        const chars = canvas.tokens.ownedTokens
+                .filter(t => t.document.actor.type === 'character' && this.isLiving(t));
+        chars.sort(
+            (a, b) => {
+                if (a.id < b.id) {
+                    return -1;
+                } else if (a.id > b.id) {
+                    return 1;
+                }
+                return 0;
+            }
+        );
+        this.svelte.applicationShell.characters = chars;
     }
 }

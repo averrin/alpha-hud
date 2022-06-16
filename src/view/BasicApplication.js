@@ -23,15 +23,27 @@ export default class MainApplication extends SvelteApplication
    }
 
     renderWidgets() {
+        if (!this.widgets) return;
         for (const widget of this.widgets) {
-            widget.render(true);
+            widget.show();
         }
     }
 
     onUpdateTokens()
     {
+        if (!this.widgets) return;
         for (const widget of this.widgets) {
             widget.onUpdateTokens();
         }
+    }
+
+    updateConfig() {
+        if (!this.widgets) return;
+        for (const widget of this.widgets) {
+            if (widget.enabled) {
+                widget.close();
+            }
+        }
+        this.renderWidgets();
     }
 }

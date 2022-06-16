@@ -9,7 +9,7 @@
       "Averrin - Averrin#0374"
   ],
   "dependencies": {
-    "@typhonjs-fvtt/runtime": "^0.0.11",
+    "@typhonjs-fvtt/runtime": "^0.0.14",
     "svelte": "^3.46.0"
   },
   "devDependencies": {
