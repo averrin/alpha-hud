@@ -8,10 +8,11 @@
     const flags = token.document.data.flags;
     let value = 0;
     let icon;
+    let data;
     if ("resource-icons" in flags) {
         hasIcon = flags["resource-icons"][`icon${iconIndex}`].resource != '';
         if (hasIcon) {
-            const data = flags["resource-icons"][`icon${iconIndex}`];
+            data = flags["resource-icons"][`icon${iconIndex}`];
             value = getProperty(token?.document?.actor.getRollData(), data.resource);
             icon = data.img;
             if (data.options.background.active) {
@@ -29,8 +30,11 @@
 </script>
 
 {#if hasIcon}
-    <div class="icon"
-        style="background: url({icon}) no-repeat; background-size: contain; background-color: {bgColor}; border: {border};">
+    <div
+        class="icon"
+        style="background: url({icon}) no-repeat; background-size: contain; background-color: {bgColor}; border: {border};"
+        title="{data.resource}"
+    >
         {value.value}
     </div>
 {/if}

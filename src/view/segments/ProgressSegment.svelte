@@ -4,10 +4,11 @@
     export let color;
 </script>
 
-<div class="progress-segment">
-    <div class="progress-bar" style="background-color: {color}; width: {value/max*100}%">
-        <span class="value">{Math.round(value/max*100)}%&nbsp;|&nbsp;{value}/{max}</span>
+<div class="progress-segment" title="{Math.round(value/max*100)}%">
+    <div class="progress-bar"
+        style="background-color: {color}; width: {value/max*100}%">
     </div>
+    <div class="value">{value}/{max}</div>
 </div>
 
 
@@ -17,21 +18,22 @@
         height: 24px;
         display: inline-block;
         border-radius: 4px;
-        margin-left: 6px;
+        margin: 0 6px;
         background-color: #eeeeee55;
-    }
-    .progress-bar {
-        height: 100%;
-        text-align: center;
-        font-size: 16px;
-        border-radius: 4px;
-
+        align-items: center;
         display: flex;
         align-items: center;
         flex-direction: row;
+        justify-content: center;
+        position: relative;
+    }
+    .progress-bar {
+        height: 24px;
+        border-radius: 4px;
+        position: absolute;
+        left: 0;
     }
     .value {
-        margin-left: 6px;
-        margin-right: 6px;
+        position: absolute;
     }
 </style>

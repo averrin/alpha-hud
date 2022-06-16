@@ -24,7 +24,7 @@
     }
 </script>
 
-<span class="data-segment">
+<span class="data-segment" title="{Math.round(data.value/data.max*100)}%">
     {#if icon != ""}
         <span class="icon" style="background-image: url({icon})"></span>
     {:else}
