@@ -1,5 +1,6 @@
 <script>
-    export let token;
+    import { getContext } from 'svelte';
+    let token = getContext('token');
 
     let imgPath = "icons/svg/chest.svg";  
     const actor = token.document.actor;

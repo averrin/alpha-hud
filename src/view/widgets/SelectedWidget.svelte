@@ -7,17 +7,18 @@
    export let tokens;
    export let settingStore;
 
+   const hideHP = globalThis.game.settings.get("alpha-hud", "hide-selected-hp");
 </script>
 
 <svelte:options accessors={true}/>
 
-<Widget bind:this={elementRoot} settingStore={settingStore}>
+<Widget bind:elementRoot settingStore={settingStore}>
     {#if tokens && tokens.length > 0}
         {#each tokens as token}
             {#if token.document.actor.data.type == "npc"}
-                <NPCInfo bind:token/>
+                <NPCInfo bind:token hideHP={hideHP}/>
             {:else}
-                <CharacterInfo bind:token/>
+                <CharacterInfo bind:token hideHP={hideHP}/>
             {/if}
         {/each}
     {:else}

@@ -1,12 +1,13 @@
 <script>
    import ProgressSegment from "../segments/ProgressSegment.svelte"
-    export let token;
+    import { getContext } from 'svelte';
+    let token = getContext('token');
     export let path;
     export let color = "";
     $: data = getProperty(token?.document?.actor.getRollData(), path);
 </script>
 
-<ProgressSegment bind:token
+<ProgressSegment
 	value={data.value}
 	max={data.max}
 	color={color}

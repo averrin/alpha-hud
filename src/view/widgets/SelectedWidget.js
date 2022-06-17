@@ -32,15 +32,22 @@ export default class SelectedWidgetApp extends WidgetApp
             target: document.body,
             props: function()
             {
-               return { settingStore: this.getPositionStore(), tokens: null };
+               return { settingStore: this.getPositionStore(), tokens: null, system: null };
             }
          }
       });
    }
 
+    async refresh() {
+        await super.refresh();
+        if (!this.svelte.applicationShell) return;
+        this.svelte.applicationShell.tokens = [];
+        setTimeout(this.onUpdateTokens.bind(this), 0);
+    }
     onUpdateTokens()
     {
-            if(!this.enabled) return;
+        if(!this.enabled) return;
         this.svelte.applicationShell.tokens = canvas.tokens.controlled;
+        this.svelte.applicationShell.system = this.system;
     }
 }

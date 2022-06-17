@@ -1,7 +1,7 @@
 <script>
     import ToggleSegment from './ToggleSegment.svelte'
-
-    export let token;
+    import { getContext } from 'svelte';
+    let token = getContext('token');
 
     function toggleVision() {
         if (token.document.actor.data.data.attributes.hp.value != 0) {

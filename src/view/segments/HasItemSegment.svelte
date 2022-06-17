@@ -1,5 +1,6 @@
 <script>
-    export let token;
+    import { getContext } from 'svelte';
+    let token = getContext('token');
     export let name;
 </script>
 

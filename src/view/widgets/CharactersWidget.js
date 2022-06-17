@@ -31,7 +31,7 @@ export default class CharactersWidgetApp extends WidgetApp
             target: document.body,
             props: function()
             {
-               return { settingStore: this.getPositionStore(), characters: null };
+               return { settingStore: this.getPositionStore(), characters: null, system: null };
             }
          }
       });
@@ -41,9 +41,16 @@ export default class CharactersWidgetApp extends WidgetApp
     return getProperty(token?.document?.actor.getRollData(), "attributes.hp.max") > 0;
    }
 
+    async refresh() {
+        await super.refresh();
+        if (!this.svelte.applicationShell) return;
+        this.svelte.applicationShell.characters = [];
+        setTimeout(this.onUpdateTokens.bind(this), 0);
+    }
+
     onUpdateTokens()
     {
-            if(!this.enabled) return;
+        if(!this.enabled) return;
         const chars = canvas.tokens.ownedTokens
                 .filter(t => t.document.actor.type === 'character' && this.isLiving(t));
         chars.sort(
@@ -57,5 +64,6 @@ export default class CharactersWidgetApp extends WidgetApp
             }
         );
         this.svelte.applicationShell.characters = chars;
+        this.svelte.applicationShell.system = this.system;
     }
 }

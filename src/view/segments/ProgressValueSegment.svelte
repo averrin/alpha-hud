@@ -1,30 +1,37 @@
 <script>
    import DataSegment from "../segments/DataSegment.svelte"
-    export let token;
+    import { getContext } from 'svelte';
+    let token = getContext('token');
     export let label = "";
     export let path;
     export let colors;
     export let icon;
 
-    const data = getProperty(token?.document?.actor.getRollData(), path);
     let color = "";
+    let data;
+    if (token) {
+        data = getProperty(token?.document?.actor.getRollData(), path);
 
-    if (colors && typeof colors === "object") {
-        for (const [key, value] of Object.entries(colors)) {
-            if (data.value >= key) {
-                color = value;
+        if (colors && typeof colors === "object") {
+            for (const [key, value] of Object.entries(colors)) {
+                if (data.value >= key) {
+                    color = value;
+                }
             }
         }
-    }
 
-    if (data.value > data.max) {
-        color = "red";
-    } else if (data.value == 0) {
-        color = "grey";
+        if (data.value > data.max) {
+            color = "red";
+        } else if (data.value == 0) {
+            color = "grey";
+        }
     }
 </script>
 
-<span class="data-segment" title="{Math.round(data.value/data.max*100)}%">
+{#if token}
+<span class="data-segment"
+    title="{Math.round(data.value/data.max*100)}%, left: {data.max-data.value}"
+>
     {#if icon != ""}
         <span class="icon" style="background-image: url({icon})"></span>
     {:else}
@@ -33,11 +40,12 @@
         {/if}
     {/if}
     <span>
-	    <DataSegment bind:token path="{path}.value" color={color}/>
+	    <DataSegment path="{path}.value" color={color}/>
 	    /
-	    <DataSegment bind:token path="{path}.max"/>
+	    <DataSegment path="{path}.max"/>
     </span>
 </span>
+{/if}
 
 <style lang="scss">
     .data-segment {

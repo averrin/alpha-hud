@@ -1,28 +1,33 @@
 <script>
    import ProgressSegment from "../segments/ProgressSegment.svelte"
+    import { getContext } from 'svelte';
+    let token = getContext('token');
 
-    export let token;
     export let label = "";
     export let color = "";
     export let trackerName;
 
+    const hasTrackers = typeof window.CrashTNT !== 'undefined';
+
     let tracker = null;
-    let trackers = CrashTNT.getActivitiesForActor(token.document.actor.data.name);
-    if (trackers) {
-        trackers = trackers.filter(t => t.name == trackerName);
-        if (trackers.length > 0) {
-            tracker = trackers[0];
+    if (hasTrackers) {
+        let trackers = window.CrashTNT.getActivitiesForActor(token.document.actor.data.name);
+        if (trackers) {
+            trackers = trackers.filter(t => t.name == trackerName);
+            if (trackers.length > 0) {
+                tracker = trackers[0];
+            }
         }
     }
 
     function increase(){
         tracker.progress++;
-        CrashTNT.updateActivityProgress(token.document.actor.data.name, trackerName, tracker.progress);
+        window.CrashTNT.updateActivityProgress(token.document.actor.data.name, trackerName, tracker.progress);
         Hooks.call("updateActor", token.document.actor, {});
     }
     function decrease(){
         tracker.progress--;
-        CrashTNT.updateActivityProgress(token.document.actor.data.name, trackerName, tracker.progress);
+        window.CrashTNT.updateActivityProgress(token.document.actor.data.name, trackerName, tracker.progress);
         Hooks.call("updateActor", token.document.actor, {});
     }
 </script>
@@ -39,7 +44,7 @@
         >
         <div class="icon" style="background: url(icons/svg/down.svg) no-repeat; background-size: contain;"></div>
     </button>
-    <ProgressSegment bind:token
+    <ProgressSegment
 	    value={tracker.progress}
 	    max={tracker.completionAt}
 	    color={color}

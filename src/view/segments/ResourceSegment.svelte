@@ -1,5 +1,6 @@
 <script>
-    export let token;
+    import { getContext } from 'svelte';
+    let token = getContext('token');
     export let iconIndex;
 
     let bgColor = 'none';
@@ -31,7 +32,7 @@
 
 {#if hasIcon}
     <div
-        class="icon"
+        class="icon resource-icon"
         style="background: url({icon}) no-repeat; background-size: contain; background-color: {bgColor}; border: {border};"
         title="{data.resource}"
     >
@@ -40,14 +41,11 @@
 {/if}
 
 <style lang="scss">
-    .icon {
+    .resource-icon {
         width: 30px;
         height: 30px;
-        border-radius: 4px;
         font-size: 20px;
         text-align: center;
-        display: inline-flex;
-        margin-left: 6px;
         align-items: center;
         justify-content: center;
 

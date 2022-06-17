@@ -1,31 +1,16 @@
 <script>
-    export let token;
+    import { currentSystemProvider } from "../../modules/api.js";
+    import { getContext } from 'svelte';
+    let token = getContext('token');
 
-    function getTotalGP(data) {
-		const currency = foundry.utils.deepClone(data.currency);
-		const convert = CONFIG.DND5E.currencies;
-		for (let [curr, currData] of Object.entries(convert)) {
-			if (currency[curr] == 0 || !("conversion" in currData)) continue;
-			const { into, each } = currData.conversion;
-			let change = Math.floor(currency[curr] / each);
-			currency[curr] -= change * each;
-			currency[into] += change;
-		}
-		return (
-			currency.pp * convert.gp.conversion.each +
-			currency.gp +
-			currency.ep / convert.ep.conversion.each +
-			currency.sp / convert.sp.conversion.each / convert.ep.conversion.each +
-			currency.cp / convert.cp.conversion.each / convert.sp.conversion.each / convert.ep.conversion.each
-		);
-	}
-    const totalGP = getTotalGP(token.document.actor.data.data);
+    const data = currentSystemProvider.getActorDetails(token.document.actor);
+    console.log(data);
 </script>
 
 <span class="currency-segment">
     <span class="icon" style="background-image: url(icons/svg/coins.svg)"></span> 
     <span>
-    {totalGP.toFixed(1)}
+    {data.totalGP}
     </span>
 </span>
 

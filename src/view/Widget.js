@@ -10,7 +10,7 @@ export default class WidgetApp extends SvelteApplication
    constructor(options)
    {
       super(options);
-        this.widgetId = options.widgetId;
+      this.widgetId = options.widgetId;
 
       this.#gameSettings.register({
          moduleId: 'alpha-hud',
@@ -39,7 +39,19 @@ export default class WidgetApp extends SvelteApplication
     }
 
 
+    async refresh() {
+        this.enabled = game.settings.get('alpha-hud', `show-${this.widgetId}`);
+        if (this.enabled) await this.render(true);
+        else await this.close();
+    }
     show() {
+        this.enabled = game.settings.get('alpha-hud', `show-${this.widgetId}`);
         if (this.enabled) this.render(true);
+    }
+
+    setSystem(provider) {
+        console.log(`!!!!! set system: ${provider}`);
+        this.system = provider;
+        this.svelte.applicationShell.system = this.system;
     }
 }

@@ -9,9 +9,14 @@
    import PileSegment from "../segments/PileSegment.svelte"
    import ProgressValueSegment from "../segments/ProgressValueSegment.svelte"
    import DataProgressSegment from "../segments/DataProgressSegment.svelte"
+   import TokenIcon from '../segments/TokenIcon.svelte';
    import CurrencySegment from "../segments/CurrencySegment.svelte"
 
+   import { setContext } from 'svelte';
+
+   export let hideHP;
    export let token;
+   setContext("token", token);
 
    const items = ["Multiattack", "Spellcasting", "Sneak Attack"];
    const hasPiles = typeof window.ItemPiles !== "undefined";
@@ -21,38 +26,45 @@
    }
 
    const hpColor = game.settings.get("alpha-hud", "color-hp");
+
+   const showTargets = globalThis.game.settings.get("alpha-hud", "show-targets");
+
+   let owner = globalThis.game.user;
+
+   setContext("token", token);
 </script>
 
 <svelte:options accessors={true}/>
 
+{#if token}
 <item>
     <row>
-	    <NameSegment bind:token/>
+	    <NameSegment/>
         <div class="divider"></div>
-	    {#if getProperty(token?.document?.actor.getRollData(), "attributes.hp.max") > 0 }
-	        <DataProgressSegment bind:token
+	    {#if !hideHP && getProperty(token?.document?.actor.getRollData(), "attributes.hp.max") > 0 }
+	        <DataProgressSegment
 	            path={"attributes.hp"}
 	            color={hpColor}
 	        />
+            <div class="divider"></div>
 	    {/if}
-        <div class="divider"></div>
-	    <AliveSegment bind:token/>
-	    <VisionSegment bind:token/>
+	    <AliveSegment/>
+	    <VisionSegment/>
 	    {#if hasPiles && !isAlive(token)}
-	        <PileSegment bind:token/>
+	        <PileSegment/>
 	    {/if}
 	</row>
     <row>
 	{#if isAlive(token)}
 	        <span class="info-container">
-	            CR: <DataSegment bind:token path="details.cr"/>
+	            CR: <DataSegment path="details.cr"/>
 	        </span>
             <div class="divider"></div>
 
 	        {#if token.document.actor.items.some(i => i.hasAttack)}
                 <span class="button-group">
                     {#each token.document.actor.items.filter(i => i.hasAttack) as item}
-	                    <ItemIconSegment bind:token name={item.name}/>
+	                    <ItemIconSegment name={item.name}/>
 	                {/each}
 	            </span>
 	        {:else}
@@ -62,17 +74,27 @@
                 <span> * </span>
                 <span class="button-group">
                     {#each items as item}
-	                    <ItemIconSegment bind:token name={item}/>
+	                    <ItemIconSegment name={item}/>
 	                {/each}
 	            </span>
+                <div class="divider"></div>
+	        {/if}
+	        {#if showTargets && Array.from(owner.targets).length > 0}
+	            <div class="target-icons">
+                {#each Array.from(owner.targets) as target}
+                    <TokenIcon token={target} player={owner}/>
+                {/each}
+                </div>
+                <div class="divider"></div>
 	        {/if}
 	{:else}
 	    <div class="cell">
-	        <CurrencySegment bind:token/>
+	        <CurrencySegment/>
 	    </div>
 	{/if}
 	</row>
-    </item>
+</item>
+{/if}
 
 <style lang="scss">
     item {

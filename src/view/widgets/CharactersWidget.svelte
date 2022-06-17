@@ -10,7 +10,7 @@
 
 <svelte:options accessors={true}/>
 
-<Widget bind:this={elementRoot} settingStore={settingStore}>
+<Widget bind:elementRoot settingStore={settingStore}>
     {#if characters && characters.length > 0}
         {#each characters as token}
             <CharacterInfo bind:token/>
