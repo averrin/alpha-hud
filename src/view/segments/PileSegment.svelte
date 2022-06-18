@@ -1,10 +1,22 @@
+///////////////////////////////////////////////////////
+//////////////////// CREATED BY ///////////////////////
+///////////////////////////////////////////////////////
+// This macro was created by u/shuggaloaf.
+// If you redistribute this, please just give me credit. 
+// Better yet, give them the GitHub link so they're 
+// always up to date: 
+// https://github.com/Shuggaloaf/NPC-to-Coin-Pile
+//
+// Enjoy! 
+///////////////////////////////////////////////////////
+
 <script>
     import { getContext } from 'svelte';
     let token = getContext('token');
 
     let imgPath = "icons/svg/chest.svg";  
     const actor = token.document.actor;
-    const needConvert = token.document.data.img != imgPath;
+    const needConvert = globalThis.ItemPiles && token.document.data.img != imgPath;
 
     async function rollCoins(PP, GP, SP, CP) {    
         let currency = actor.data.data.currency;
@@ -29,8 +41,6 @@
         ///////// Coins /////////
 
         if(rand.total<26){
-            console.log(">>> No coins found")                 //Nothing
-
         } else if (rand.total>26 && rand.total<56){
             await rollCoins("0","0","0","1d10");              //6CP avg
         } else if (rand.total>55 && rand.total<80){
@@ -47,7 +57,7 @@
             await rollCoins("3d3","24d2","10d6","25d6");      //100GP avg
         }
         
-        ItemPiles.API.turnTokensIntoItemPiles(token);
+        globalThis.ItemPiles.API.turnTokensIntoItemPiles(token);
 	    token.actor.update({
     		"data.attributes.hp.max": 0,
 	    });

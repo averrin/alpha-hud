@@ -1,4 +1,5 @@
 <script>
+    import { currentSystemProvider } from "../../modules/api.js";
     import { getContext, onDestroy } from 'svelte';
     let tokenStore = getContext('token');
     let token;
@@ -6,9 +7,10 @@
 	    token = value;
     });
     onDestroy(unsubscribe);
-    export let path;
-    export let color = "";
-    $: value = globalThis.getProperty(token?.document?.actor.getRollData(), path);
+
+    $: data = currentSystemProvider.getNPCLevel(token.document.actor);
 </script>
 
-<span style={color!="" ? `color: ${color};` : ''}>{value}</span>
+<span class="level-segment">
+	{data.label}: {data.value}
+</span>

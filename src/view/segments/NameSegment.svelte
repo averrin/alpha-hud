@@ -1,7 +1,15 @@
 <script>
+    import { foundry } from '../../modules/foundry.js';
+    import { moduleId, SETTINGS } from '../../constants.js';
     import TokenIcon from './TokenIcon.svelte';
-    import { getContext } from 'svelte';
-    let token = getContext('token');
+
+    import { getContext, onDestroy } from 'svelte';
+    let tokenStore = getContext('token');
+    let token;
+    const unsubscribe = tokenStore.subscribe(value => {
+	    token = value;
+    });
+    onDestroy(unsubscribe);
 
     function onClick() {
         token.document.actor.sheet.render(true);
@@ -11,7 +19,8 @@
         if (event.which == 3) return token.document.sheet.render(true);
         return null;
     }
-   const showIcons = globalThis.game.settings.get("alpha-hud", "show-targets");
+   const showIcons = foundry.settings.get(moduleId, SETTINGS.SHOW_TARGETS);
+   const showWarn = foundry.settings.get(moduleId, SETTINGS.SHOW_NAME_NOTIFICATION);
 
    let owner;
    const users = game.users.filter(u => u.character == token.document.actor);
@@ -22,20 +31,18 @@
 
 <span class="name-segment">
     {#if showIcons}
-        <TokenIcon token={token} player={globalThis.game.user}/>
+        <TokenIcon bind:token={token} player={foundry.user}/>
     {/if}
     <button
         on:click|preventDefault|stopPropagation={onClick}
         on:pointerdown|preventDefault|stopPropagation={altClick}
         >
-        {#if owner}
         <div class="marker"
-            style:background={owner ? owner.data.color : ''}
+            style:background={owner ? owner.data.color : 'gray'}
             ></div>
-        {/if}
         {token?.data?.name}
-        {#if token?.data?.name != token?.document?.actor?.name}
-            <i class="fas fa-exclamation-triangle"></i>
+        {#if token?.data?.name != token?.document?.actor?.name && showWarn}
+            &nbsp;<i class="fas fa-exclamation-triangle"></i>
         {/if}
     </button>
 
@@ -53,25 +60,7 @@
     .name-segment {
         flex-direction: row;
         display: flex;
-    }
-    button {
-        // width: 24px;
-        height: 24px;
-        padding: 2px;
-        background: none;
-        color: #eee;
-        border: none;
-        font-size: 24px;
-        padding: 0;
-        display: inline-flex;
-        align-items: center
-    }
-
-
-    button:hover {
-        cursor: pointer;
-        border: none;
-        box-shadow: none;
-        color: #aaf;
+        justify-content: space-between;
+        align-items: center;
     }
 </style>

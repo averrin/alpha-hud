@@ -1,8 +1,7 @@
 import { SvelteApplication }  from '@typhonjs-fvtt/runtime/svelte/application';
-
 import { TJSGameSettings }    from '@typhonjs-fvtt/runtime/svelte/store';
+import { moduleId, SETTINGS } from '../constants.js';
 
-const id = "abstract";
 export default class WidgetApp extends SvelteApplication
 {
    #gameSettings = new TJSGameSettings();
@@ -13,8 +12,8 @@ export default class WidgetApp extends SvelteApplication
       this.widgetId = options.widgetId;
 
       this.#gameSettings.register({
-         moduleId: 'alpha-hud',
-         key: `widget-position-${options.widgetId}`,
+         moduleId,
+         key: `${SETTINGS.POSITION_PREFIX}-${options.widgetId}`,
          options: {
             scope: 'client',
             config: false,
@@ -23,11 +22,11 @@ export default class WidgetApp extends SvelteApplication
          }
       });
 
-      this.enabled = game.settings.get('alpha-hud', `show-${options.widgetId}`);
+      this.enabled = game.settings.get(moduleId, `${SETTINGS.SHOW_PREFIX}-${options.widgetId}`);
       try
       {
          // Attempt to parse session storage item and set to Position.
-         this.position = game.settings.get('alpha-hud', `widget-position-${options.widgetId}`);
+         this.position = game.settings.get(moduleId, `${SETTINGS.POSITION_PREFIX}-${options.widgetId}`);
       }
       catch (err) { 
         console.warn("cannot read saved position")
@@ -35,23 +34,20 @@ export default class WidgetApp extends SvelteApplication
    }
 
     getPositionStore() {
-        return this.#gameSettings.getStore(`widget-position-${this.widgetId}`);
+        return this.#gameSettings.getStore(`${SETTINGS.POSITION_PREFIX}-${this.widgetId}`);
     }
 
 
     async refresh() {
-        this.enabled = game.settings.get('alpha-hud', `show-${this.widgetId}`);
+        this.enabled = game.settings.get(moduleId, `${SETTINGS.SHOW_PREFIX}-${this.widgetId}`);
         if (this.enabled) await this.render(true);
         else await this.close();
     }
     show() {
-        this.enabled = game.settings.get('alpha-hud', `show-${this.widgetId}`);
+        this.enabled = game.settings.get(moduleId, `${SETTINGS.SHOW_PREFIX}-${this.widgetId}`);
         if (this.enabled) this.render(true);
     }
 
-    setSystem(provider) {
-        console.log(`!!!!! set system: ${provider}`);
-        this.system = provider;
-        this.svelte.applicationShell.system = this.system;
+    installHooks() {
     }
 }

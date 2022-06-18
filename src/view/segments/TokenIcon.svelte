@@ -1,4 +1,5 @@
 <script>
+    import { canvas } from '../../modules/foundry.js';
     import { getContext } from 'svelte';
     export let token;
     export let player;
@@ -10,7 +11,8 @@
         }
     }
     function iconAltClick(event) {
-        if (event.which == 3) return globalThis.canvas.animatePan(({ x: token.center.x, y: token.center.y, scale: 1}));
+        if (event.which == 2) return token.control({releaseOthers: !event.shiftKey});
+        if (event.which == 3) return canvas.animatePan(({ x: token.center.x, y: token.center.y, scale: 1}));
         return null;
     }
 
@@ -23,21 +25,22 @@
     on:pointerdown|preventDefault|stopPropagation={iconAltClick}
     title={token.data.name}
 >
-    <div class="icon" style="background: url({token.data.img}) no-repeat; background-size: contain;"></div>
+    <div class="icon"
+        style="background-image: url({token.data.img});"
+        style:border={targeted ? `2px solid  ${player.data.color}` : "none"}
+    ></div>
 </button>
 
 <style lang="scss">
     button.token-icon {
         width: 30px;
         height: 30px;
+        margin-right: 6px;
     }
 
-    button.token-icon.targeted {
-        border: 2px solid orange;
-    }
     button {
         // width: 24px;
-        height: 24px;
+        height: 30px;
         padding: 2px;
         background: none;
         color: #eee;

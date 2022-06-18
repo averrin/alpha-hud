@@ -1,25 +1,87 @@
 <script>
-   import ProgressValueSegment from "../segments/ProgressValueSegment.svelte"
-    import { getContext } from 'svelte';
-    let token = getContext('token');
-    const data = token?.document?.actor.getRollData();
-    const hasEnc = globalThis.getProperty(data, "attributes.encumbrance");
-    const enc_colors = {
-        0: 'lightgreen',
-    };
-    if (hasEnc) {
-        const s = data.abilities.str.value;
-        enc_colors[s*5] = "yellow";
-        enc_colors[s*7.5] = "orange";
+    // TODO: extract strings to constants
+    import { currentSystemProvider } from "../../modules/api.js";
+    import {foundry} from "../../modules/foundry.js"
+    import {moduleId, SETTINGS} from "../../constants.js"
+    import { getContext, onDestroy } from 'svelte';
+    let tokenStore = getContext('token');
+    let token;
+    const unsubscribe = tokenStore.subscribe(value => {
+	    token = value;
+    });
+    onDestroy(unsubscribe);
+
+    let data;
+    let hasEnc;
+    const icon = "icons/svg/item-bag.svg";
+    let color = "";
+    let value;
+    let max;
+    function delay(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    $: {
+        data = token?.document?.actor.getRollData();
+        hasEnc = globalThis.getProperty(data, "attributes.encumbrance");
+
+        const enc_colors = {
+            0: 'lightgreen',
+        };
+
+
+        const veIntegration = foundry.settings.get(moduleId, SETTINGS.VE_INTEGRATION);
+        const VE = game.modules.get('variant-encumbrance-dnd5e');
+        if (hasEnc) {
+            (async () => {
+                if (veIntegration && VE && VE.api) {
+                    await delay(1000); //hack for VE update
+                    data = VE.api.calculateWeightOnActorFromId(token.document.actor.id);
+                    data.max = data.heavyMax;
+                    data.value = data.totalWeight;
+                } else {
+                    data = currentSystemProvider.getEncumberance(token.document.actor);
+                }
+
+                enc_colors[data.lightMax] = "yellow";
+                enc_colors[data.mediumMax] = "orange";
+
+                for (const [key, v] of Object.entries(enc_colors)) {
+                    if (data.value >= key) {
+                        color = v;
+                    }
+                }
+
+                if (data.value > data.max) {
+                    color = "red";
+                } else if (data.value == 0) {
+                    color = "grey";
+                }
+                value = data.value;
+                max = data.max;
+            })();
+        }
     }
 
 </script>
 
 {#if hasEnc}
-<ProgressValueSegment
-    path="attributes.encumbrance"
-    label="enc"
-    colors={enc_colors}
-    icon="icons/svg/item-bag.svg"
-/>
+<span class="data-segment"
+    title="{Math.round(value/max*100)}%, left: {max-value}"
+>
+    <span class="icon" style="background-image: url({icon})"></span>
+    <span>
+        <span style={color!="" ? `color: ${color};` : ''}>{value}</span>
+	    /
+        <span>{max}</span>
+    </span>
+</span>
 {/if}
+
+<style lang="scss">
+    .data-segment {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+</style>

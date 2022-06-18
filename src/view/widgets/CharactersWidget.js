@@ -2,9 +2,24 @@ import { SvelteApplication }  from '@typhonjs-fvtt/runtime/svelte/application';
 
 import CharactersWidget          from './CharactersWidget.svelte';
 import WidgetApp          from '../Widget.js';
+import { charactersStore, targetsStore }          from '../../modules/stores.js';
+import { isLiving } from "../../modules/helpers.js";
 
 export default class CharactersWidgetApp extends WidgetApp
 {
+    #HOOKS = [
+        'updateToken',
+        'updateActor',
+        'targetToken',
+        'createCombatant',
+        'deleteCombatant',
+
+        'canvasReady',
+        'createToken',
+        'deleteToken',
+        'deleteActor',
+    ];
+
    constructor(options)
    {
       super({widgetId: "characters"});
@@ -31,15 +46,19 @@ export default class CharactersWidgetApp extends WidgetApp
             target: document.body,
             props: function()
             {
-               return { settingStore: this.getPositionStore(), characters: null, system: null };
+               return {
+                            settingStore: this.getPositionStore(),
+                        };
             }
          }
       });
    }
 
-   isLiving(token) {
-    return getProperty(token?.document?.actor.getRollData(), "attributes.hp.max") > 0;
-   }
+    installHooks() {
+      for (let hook of this.#HOOKS) {
+          Hooks.on(hook, this.onUpdateTokens.bind(this));
+      }
+    }
 
     async refresh() {
         await super.refresh();
@@ -52,7 +71,7 @@ export default class CharactersWidgetApp extends WidgetApp
     {
         if(!this.enabled) return;
         const chars = canvas.tokens.ownedTokens
-                .filter(t => t.document.actor.type === 'character' && this.isLiving(t));
+                .filter(t => t.document.actor.type === 'character' && isLiving(t));
         chars.sort(
             (a, b) => {
                 if (a.id < b.id) {
@@ -63,7 +82,7 @@ export default class CharactersWidgetApp extends WidgetApp
                 return 0;
             }
         );
-        this.svelte.applicationShell.characters = chars;
-        this.svelte.applicationShell.system = this.system;
+        charactersStore.set(chars);
+        targetsStore.set(game.user.targets);
     }
 }

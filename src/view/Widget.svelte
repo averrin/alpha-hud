@@ -1,6 +1,7 @@
 <script>
    export let elementRoot;
    import '../styles/widgets.scss';
+    import {moduleId, SETTINGS} from '../constants.js';
     import { getContext } from 'svelte';
     import {
           applyPosition,
@@ -8,19 +9,15 @@
 
     const { application } = getContext('external');
     const position = application.position;
+    position.scale = game.settings.get(moduleId, SETTINGS.UI_SCALE);
     export let settingStore;
    const storePosition = foundry.utils.debounce((data) => $settingStore = data, 500);
    $: storePosition($position);
-
-   function toggleCollapsed() {
-       console.log("fire");
-       position.update(p => p.width = 100);
-   }
 </script>
 
 <svelte:options accessors={true}/>
 
-<div class="widget" bind:this={elementRoot}
+<div class="alpha-widget" bind:this={elementRoot}
     use:applyPosition={position}
     use:draggable={{position}}>
     <slot></slot>

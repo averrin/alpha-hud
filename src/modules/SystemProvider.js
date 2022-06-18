@@ -28,6 +28,17 @@ export class SystemProvider {
 		return 500;
 	}
 
+	getNPCLevel(actor) {
+	    return {
+	        "label": "CR",
+	        "value": "unknown",
+	    }
+	}
+
+	getEncumberance(actor) {
+	    return false;
+	}
+
 	getActorDetails(actor) {
 		const data = actor.data.data;
 		return {
@@ -389,6 +400,25 @@ export class dnd5eProvider extends SystemProvider {
 		});
 	}
 
+	getNPCLevel(actor) {
+	    return {
+	        "label": "CR",
+	        "value": actor.getRollData().details.cr,
+	    }
+	}
+
+	getEncumberance(actor) {
+	    const data = actor.getRollData().attributes.encumbrance;
+        const s = actor.getRollData().abilities.str.value;
+	    return {
+	        value: data.value,
+            lightMax: s*5,
+            mediumMax: s*7.5,
+            heavyMax: s*15,
+            max: data.max,
+	    };
+	}
+
 	get loadTemplates() {
 		return ["modules/party-overview/templates/parts/DND5E-Proficiencies.html"];
 	}
@@ -613,6 +643,13 @@ export class dnd5eProvider extends SystemProvider {
 export class pf1Provider extends SystemProvider {
 	knowledgeKeys = ["kar", "kdu", "ken", "kge", "khi", "klo", "kna", "kno", "kpl", "kre"];
 
+	getNPCLevel(actor) {
+	    return {
+	        "label": "CR",
+	        "value": actor.getRollData().details.cr.total,
+	    }
+	}
+
 	get loadTemplates() {
 		return ["modules/party-overview/templates/parts/PF1e-Knowledge.html"];
 	}
@@ -638,6 +675,17 @@ export class pf1Provider extends SystemProvider {
 
 	getTotalGP(currency) {
 		return currency.cp / 100 + currency.sp / 10 + currency.gp + currency.pp * 10;
+	}
+
+	getEncumberance(actor) {
+	    const data = actor.getRollData().attributes.encumbrance;
+	    return {
+	        value: data.carriedWeight,
+            lightMax: data.levels.light,
+            mediumMax: data.levels.medium,
+            heavyMax: data.levels.heavy,
+            max: data.levels.carry,
+	    };
 	}
 
 	getActorDetails(actor) {
@@ -726,6 +774,13 @@ export class pf2eProvider extends SystemProvider {
 					};
 				});
 		});
+	}
+
+	getNPCLevel(actor) {
+	    return {
+	        "label": "LVL",
+	        "value": actor.getRollData().details.level.value,
+	    }
 	}
 
 	get loadTemplates() {

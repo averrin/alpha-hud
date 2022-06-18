@@ -4,6 +4,7 @@ export default class WidgetManager
     async renderWidgets() {
         for (const widget of this.widgets) {
             await widget.show();
+            widget.installHooks();
         }
     }
 
@@ -15,6 +16,7 @@ export default class WidgetManager
 
     onUpdateTokens()
     {
+        // this.refreshWidgets();
         for (const widget of this.widgets) {
             widget.onUpdateTokens();
         }

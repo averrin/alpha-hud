@@ -1,7 +1,12 @@
 <script>
    import DataSegment from "../segments/DataSegment.svelte"
-    import { getContext } from 'svelte';
-    let token = getContext('token');
+    import { getContext, onDestroy } from 'svelte';
+    let tokenStore = getContext('token');
+    let token;
+    const unsubscribe = tokenStore.subscribe(value => {
+	    token = value;
+    });
+    onDestroy(unsubscribe);
     export let label = "";
     export let path;
     export let colors;
@@ -9,21 +14,23 @@
 
     let color = "";
     let data;
-    if (token) {
-        data = getProperty(token?.document?.actor.getRollData(), path);
+    $: {
+        if (token) {
+            data = globalThis.getProperty(token?.document?.actor.getRollData(), path);
 
-        if (colors && typeof colors === "object") {
-            for (const [key, value] of Object.entries(colors)) {
-                if (data.value >= key) {
-                    color = value;
+            if (colors && typeof colors === "object") {
+                for (const [key, value] of Object.entries(colors)) {
+                    if (data.value >= key) {
+                        color = value;
+                    }
                 }
             }
-        }
 
-        if (data.value > data.max) {
-            color = "red";
-        } else if (data.value == 0) {
-            color = "grey";
+            if (data.value > data.max) {
+                color = "red";
+            } else if (data.value == 0) {
+                color = "grey";
+            }
         }
     }
 </script>

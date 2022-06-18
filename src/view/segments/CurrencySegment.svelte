@@ -1,10 +1,14 @@
 <script>
     import { currentSystemProvider } from "../../modules/api.js";
-    import { getContext } from 'svelte';
-    let token = getContext('token');
+    import { getContext, onDestroy } from 'svelte';
+    let tokenStore = getContext('token');
+    let token;
+    const unsubscribe = tokenStore.subscribe(value => {
+	    token = value;
+    });
+    onDestroy(unsubscribe);
 
-    const data = currentSystemProvider.getActorDetails(token.document.actor);
-    console.log(data);
+    $: data = currentSystemProvider.getActorDetails(token.document.actor);
 </script>
 
 <span class="currency-segment">

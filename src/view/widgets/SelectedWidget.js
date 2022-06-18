@@ -2,14 +2,34 @@ import { SvelteApplication }  from '@typhonjs-fvtt/runtime/svelte/application';
 
 import SelectedWidget          from './SelectedWidget.svelte';
 import WidgetApp          from '../Widget.js';
+import {actionsStore, tokensStore, targetsStore}          from '../../modules/stores.js';
+import { moduleId, SETTINGS} from "../../constants.js";
 
 export default class SelectedWidgetApp extends WidgetApp
 {
 
+    #HOOKS = [
+        'controlToken',
+        'updateToken',
+        'updateActor',
+        'targetToken',
+        'createCombatant',
+        'deleteCombatant',
+    ];
    constructor(options)
    {
       super({widgetId: "selected"});
     }
+
+    installHooks() {
+      Hooks.on('renderTokenActionHUD', (_, __, data) => {
+          this.onUpdateActions(data.actions);
+      });
+      for (let hook of this.#HOOKS) {
+          Hooks.on(hook, this.onUpdateTokens.bind(this));
+      }
+    }
+
    /**
     * Default Application options
     *
@@ -32,7 +52,11 @@ export default class SelectedWidgetApp extends WidgetApp
             target: document.body,
             props: function()
             {
-               return { settingStore: this.getPositionStore(), tokens: null, system: null };
+               return {
+                settingStore: this.getPositionStore(),
+                targets: null,
+                actons: null,
+               };
             }
          }
       });
@@ -41,13 +65,20 @@ export default class SelectedWidgetApp extends WidgetApp
     async refresh() {
         await super.refresh();
         if (!this.svelte.applicationShell) return;
-        this.svelte.applicationShell.tokens = [];
         setTimeout(this.onUpdateTokens.bind(this), 0);
     }
+
     onUpdateTokens()
     {
-        if(!this.enabled) return;
-        this.svelte.applicationShell.tokens = canvas.tokens.controlled;
-        this.svelte.applicationShell.system = this.system;
+        if(!this.enabled || !this.svelte.applicationShell) return;
+        tokensStore.set(canvas.tokens.controlled);
+        const showTargets = globalThis.game.settings.get(moduleId, SETTINGS.SHOW_TARGETS);
+        if (showTargets) targetsStore.set(game.user.targets);
+    }
+    onUpdateActions(actions) {
+        const showActions = typeof game.tokenActionHUD !== 'undefined' && game.settings.get(moduleId, SETTINGS.SHOW_ACTIONS);
+        if(!this.enabled || !showActions || !this.svelte.applicationShell) return;
+        actionsStore.set(actions);
+        this.onUpdateTokens();
     }
 }
