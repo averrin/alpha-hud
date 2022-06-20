@@ -1,3 +1,5 @@
+import {moduleId, SETTINGS} from '../constants.js';
+
 // prettier-ignore
 import { SystemProvider, archmageProvider, bitdProvider, dccProvider, dnd35eProvider, dnd4eProvider, dnd5eProvider, pf1Provider, pf2eProvider,
 	scumAndVillainyProvider, sfrpgProvider, swadeProvider, tormenta20Provider, wfrp4eProvider, } from "./SystemProvider.js";
@@ -13,7 +15,7 @@ function register(module, type, systemProvider) {
 
 function setupProvider(systemProvider) {
 	availableSystemProviders[systemProvider.id] = systemProvider;
-	game.settings.settings.get("alpha-hud.systemProvider").default = getDefaultSystemProvider();
+	game.settings.settings.get(moduleId + '.' + SETTINGS.SYSTEM_PROVIDER).default = getDefaultSystemProvider();
 	updateSystemProvider();
 }
 
@@ -36,8 +38,8 @@ export function getDefaultSystemProvider() {
 
 export function updateSystemProvider() {
 	// If the configured provider is registered use that one. If not use the default provider
-	const configuredProvider = game.settings.get("alpha-hud", "systemProvider");
-	currentSystemProvider = availableSystemProviders[configuredProvider] ?? availableSystemProviders[game.settings.settings.get("alpha-hud.systemProvider").default];
+	const configuredProvider = game.settings.get(moduleId, SETTINGS.SYSTEM_PROVIDER);
+	currentSystemProvider = availableSystemProviders[configuredProvider] ?? availableSystemProviders[game.settings.settings.get(moduleId + '.' + SETTINGS.SYSTEM_PROVIDER).default];
 }
 
 export function initApi() {
@@ -87,7 +89,7 @@ export function initApi() {
 			break;
 	}
 	for (let systemProvider of systemProviders) availableSystemProviders[systemProvider.id] = systemProvider;
-	game.settings.settings.get("alpha-hud.systemProvider").default = getDefaultSystemProvider();
+	game.settings.settings.get(moduleId + '.' + SETTINGS.SYSTEM_PROVIDER).default = getDefaultSystemProvider();
 	updateSystemProvider();
 }
 

@@ -11,13 +11,16 @@
     const position = application.position;
     position.scale = game.settings.get(moduleId, SETTINGS.UI_SCALE);
     export let settingStore;
+    export let widgetId;
    const storePosition = foundry.utils.debounce((data) => $settingStore = data, 500);
    $: storePosition($position);
 </script>
 
 <svelte:options accessors={true}/>
 
-<div class="alpha-widget" bind:this={elementRoot}
+<div class="alpha-widget"
+    id={widgetId}
+    bind:this={elementRoot}
     use:applyPosition={position}
     use:draggable={{position}}>
     <slot></slot>

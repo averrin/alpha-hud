@@ -1,3 +1,17 @@
+<script>
+    import { getContext, onDestroy } from 'svelte';
+    let tokenStore = getContext('token');
+    let token;
+    let needConvert;
+    let imgPath = "icons/svg/chest.svg";  
+    const unsubscribe = tokenStore.subscribe(value => {
+	    token = value;
+        needConvert = globalThis.ItemPiles && token.document.data.img != imgPath;
+    });
+    onDestroy(unsubscribe);
+
+    const actor = token.document.actor;
+
 ///////////////////////////////////////////////////////
 //////////////////// CREATED BY ///////////////////////
 ///////////////////////////////////////////////////////
@@ -9,14 +23,6 @@
 //
 // Enjoy! 
 ///////////////////////////////////////////////////////
-
-<script>
-    import { getContext } from 'svelte';
-    let token = getContext('token');
-
-    let imgPath = "icons/svg/chest.svg";  
-    const actor = token.document.actor;
-    const needConvert = globalThis.ItemPiles && token.document.data.img != imgPath;
 
     async function rollCoins(PP, GP, SP, CP) {    
         let currency = actor.data.data.currency;

@@ -1,5 +1,5 @@
 <script>
-    import {matchTrackers, hasResourceIcons, isAlive} from '../../modules/helpers.js';
+    import {matchTrackers, hasResourceIcons, isAlive, findItems} from '../../modules/helpers.js';
     import {moduleId, SETTINGS} from '../../constants.js';
     import {foundry} from '../../modules/foundry.js';
     import NameSegment from "../segments/NameSegment.svelte"
@@ -17,6 +17,7 @@
     import TokenIcon from '../segments/TokenIcon.svelte';
     import CombatSegment from "../segments/CombatSegment.svelte"
     import AmmoSegment from "../segments/AmmoSegment.svelte"
+    import ItemCountSegment from '../segments/ItemCountSegment.svelte'
 
     import ProgressValueSegment from "../segments/ProgressValueSegment.svelte"
     import DataProgressSegment from "../segments/DataProgressSegment.svelte"
@@ -52,6 +53,9 @@
 
 
     const trackers = matchTrackers(token);
+
+    const itemsToFind = JSON.parse(globalThis.game.settings.get(moduleId, SETTINGS.ITEM_COUNT_LIST));
+    $: items = findItems(token, itemsToFind);
 </script>
 
 <svelte:options accessors={true}/>
@@ -82,8 +86,13 @@
 	    {#if isAlive(token)}
 	        <CombatSegment/>
 	        <AmmoSegment/>
+            <div class="divider"></div>
 	    {/if}
-        <div class="divider"></div>
+
+        {#each items as item, i}
+	        <ItemCountSegment item={item}/>
+            <div class="divider"></div>
+	    {/each}
 	    {#if hasResourceIcons(token)}
 	        <div class="resource-icons">
 	            <ResourceSegment iconIndex=1/>

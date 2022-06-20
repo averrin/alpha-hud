@@ -65,7 +65,7 @@
 
 </script>
 
-{#if hasEnc}
+{#if hasEnc && value}
 <span class="data-segment"
     title="{Math.round(value/max*100)}%, left: {max-value}"
 >

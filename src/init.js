@@ -1,29 +1,51 @@
-import MainApplication from './view/BasicApplication.js';
+import WidgetManager from './view/WidgetManager.js';
 import SelectedWidgetApp from './view/widgets/SelectedWidget.js';
 import CharactersWidgetApp from './view/widgets/CharactersWidget.js';
 
 import { initApi } from "./modules/api.js";
-import { initSettings } from "./modules/settings.js";
-import { foundry, initFoundry } from './modules/foundry.js';
-import { moduleId, HOOKS } from './constants.js';
+import { moduleId, SETTINGS } from "./constants.js";
+import { initSettings, setting } from "./modules/settings.js";
+import { logger } from "./modules/helpers.js";
+import { initFoundry } from './modules/foundry.js';
 
-const app = new MainApplication();
-app.widgets = [];
-Hooks.once('ready', async () => {
+
+const app = new WidgetManager();
+
+Hooks.once('init', async () => {
     initFoundry();
-    if (foundry.user.isGM) {
-        initSettings(app);
-        initApi();
+    initSettings(app);
+});
 
-        app.widgets.push(new SelectedWidgetApp());
-        app.widgets.push(new CharactersWidgetApp());
-        await app.renderWidgets();
+Hooks.on('getSceneControlButtons', (buttons) => {
+    if (game.user.isGM) {
+        const tokenButton = buttons.find(b => b.name == "token");
+        if (tokenButton) {
+            tokenButton.tools.push({
+                name: "alpha-hud",
+                title: "Toggle Alpha HUD",
+                icon: "fas alpha-hud-icon",
+                visible: game.user.isGm,
+                onClick: () => {
+                    app.toggle();
+                },
+                toggle: true,
+                active: setting(SETTINGS.SHOW)
+            });
+        }
     }
 });
-for (let hook of HOOKS) {
-    // Hooks.on(hook, debounce(app.onUpdateTokens.bind(app), 200));
-}
 
-Hooks.on("canvasInit", (canvas) => {
-	Hooks.once("renderCombatTracker", app.onUpdateTokens.bind(app));
+Hooks.once('ready', async () => {
+    if (game.user.isGM) {
+        initApi();
+
+        app.add(new SelectedWidgetApp());
+        app.add(new CharactersWidgetApp());
+        await app.start();
+        if (setting(SETTINGS.SHOW)) app.show();
+
+        logger.info("Started!")
+    } else {
+        logger.warn("User mode is unsupported yet!")
+    }
 });

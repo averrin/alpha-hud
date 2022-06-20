@@ -1,3 +1,7 @@
+.alpha-hud-icon::before {
+    content: "α";
+}
+
 .alpha-widget {
     position: absolute;
     border-left: 6px #eee solid;
@@ -14,7 +18,7 @@
     border: 1px solid var(--color-border-dark);
     border-radius: 5px;
     box-shadow: 0 0 12px var(--color-shadow-dark);
-    overflow: hide;
+    overflow: hidden;
 
     .divider:not(:last-child):not(:first-child) {
         border: 1px solid #eeeeee55;

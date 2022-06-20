@@ -1,6 +1,7 @@
 import { SvelteApplication }  from '@typhonjs-fvtt/runtime/svelte/application';
 import { TJSGameSettings }    from '@typhonjs-fvtt/runtime/svelte/store';
 import { moduleId, SETTINGS } from '../constants.js';
+import { logger } from "../modules/helpers.js";
 
 export default class WidgetApp extends SvelteApplication
 {
@@ -43,9 +44,22 @@ export default class WidgetApp extends SvelteApplication
         if (this.enabled) await this.render(true);
         else await this.close();
     }
-    show() {
+    async show() {
         this.enabled = game.settings.get(moduleId, `${SETTINGS.SHOW_PREFIX}-${this.widgetId}`);
-        if (this.enabled) this.render(true);
+        logger.withTag(this.widgetId).info("show", this.enabled);
+        if (this.enabled) {
+            await this.render(true);
+            setTimeout(this.onUpdateTokens.bind(this), 0);
+        }
+    }
+
+    async hide() {
+        await this.close();
+    }
+
+    setSystem(provider) {
+        this.system = provider;
+        this.svelte.applicationShell.system = this.system;
     }
 
     installHooks() {

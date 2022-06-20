@@ -1,6 +1,6 @@
 import { SvelteApplication }  from '@typhonjs-fvtt/runtime/svelte/application';
 
-import SelectedWidget          from './SelectedWidget.svelte';
+import TokensWidget          from './TokensWidget.svelte';
 import WidgetApp          from '../Widget.js';
 import {actionsStore, tokensStore, targetsStore}          from '../../modules/stores.js';
 import { moduleId, SETTINGS} from "../../constants.js";
@@ -12,6 +12,7 @@ export default class SelectedWidgetApp extends WidgetApp
         'controlToken',
         'updateToken',
         'updateActor',
+        'updateItem',
         'targetToken',
         'createCombatant',
         'deleteCombatant',
@@ -48,14 +49,16 @@ export default class SelectedWidgetApp extends WidgetApp
         zIndex: 95,
 
          svelte: {
-            class: SelectedWidget,
+            class: TokensWidget,
             target: document.body,
             props: function()
             {
                return {
                 settingStore: this.getPositionStore(),
-                targets: null,
-                actons: null,
+                store: tokensStore,
+                hideHP: globalThis.game.settings.get(moduleId, SETTINGS.HIDE_SELECTED_HP),
+                widgetId: this.widgetId,
+                placeholderText: "Please select a token."
                };
             }
          }
@@ -64,13 +67,12 @@ export default class SelectedWidgetApp extends WidgetApp
 
     async refresh() {
         await super.refresh();
-        if (!this.svelte.applicationShell) return;
-        setTimeout(this.onUpdateTokens.bind(this), 0);
     }
 
     onUpdateTokens()
     {
         if(!this.enabled || !this.svelte.applicationShell) return;
+        this.svelte.applicationShell.widgetId = this.widgetId;
         tokensStore.set(canvas.tokens.controlled);
         const showTargets = globalThis.game.settings.get(moduleId, SETTINGS.SHOW_TARGETS);
         if (showTargets) targetsStore.set(game.user.targets);

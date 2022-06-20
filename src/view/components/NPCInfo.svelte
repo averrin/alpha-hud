@@ -38,12 +38,13 @@
     export let hideHP;
     export let token;
     let onlySelected;
+    let tags;
     const tokenStore = writable(token);
     setContext("token", tokenStore);
     $: tokenStore.set(token);
     $: items = token?.document?.actor?.items.filter(i => itemsToFind.some(itf => itf == i.name));
     $: onlySelected = globalThis.canvas.tokens.controlled.length == 1;
-    $: console.log(onlySelected, showActions, items, items.length);
+    $: if (globalThis.Tagger) tags = Tagger.getTags(token).filter(t => t != '');
 
     let owner = globalThis.game.user;
 </script>
@@ -64,8 +65,8 @@
 	    {/if}
 	    <div>
 	        <AliveSegment/>
-	        <VisionSegment/>
 	        {#if isAlive(token)}
+	            <VisionSegment/>
 	            <CombatSegment/>
 	        {/if}
 	        {#if hasPiles && !isAlive(token)}
@@ -109,12 +110,32 @@
 	    </div>
 	{/if}
 	</row>
+	{#if tags.length > 0}
+    <row class="tags-row">
+        <div>
+        {#each tags as tag}
+            <span class="tag">{tag}</span>
+        {/each}
+        </div>
+	</row>
+	{/if}
 </item>
 {/if}
 
 <style lang="scss">
     .button-group {
         margin: 0 4px;
+    }
+    .tag {
+        margin-right: 4px;
+        padding: 2px 8px;
+        border-radius: 6px;
+        background-color: #eee;
+        color: #232323;
+        text-shadow: none !important;
+    }
+    .tags-row {
+        height: 32px;
     }
 </style>
 

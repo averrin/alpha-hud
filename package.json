@@ -6,10 +6,11 @@
   "private": true,
   "type": "module",
   "contributors": [
-      "Averrin - Averrin#0374"
+    "Averrin - Averrin#0374"
   ],
   "dependencies": {
     "@typhonjs-fvtt/runtime": "^0.0.14",
+    "consola": "^2.15.3",
     "svelte": "^3.46.0"
   },
   "devDependencies": {
@@ -22,7 +23,10 @@
     "rollup": "^2",
     "svelte-preprocess": "^4.10.0"
   },
-  "browserslist": [">5%", "not IE 11"],
+  "browserslist": [
+    ">5%",
+    "not IE 11"
+  ],
   "scripts": {
     "build": "rollup --config",
     "build-watch": "rollup --watch --config",

@@ -1,9 +1,9 @@
 import { SvelteApplication }  from '@typhonjs-fvtt/runtime/svelte/application';
 
-import CharactersWidget          from './CharactersWidget.svelte';
+import TokensWidget          from './TokensWidget.svelte';
 import WidgetApp          from '../Widget.js';
 import { charactersStore, targetsStore }          from '../../modules/stores.js';
-import { isLiving } from "../../modules/helpers.js";
+import { isLiving, logger } from "../../modules/helpers.js";
 
 export default class CharactersWidgetApp extends WidgetApp
 {
@@ -18,60 +18,70 @@ export default class CharactersWidgetApp extends WidgetApp
         'createToken',
         'deleteToken',
         'deleteActor',
+
+        'updateItem',
     ];
 
-   constructor(options)
-   {
-      super({widgetId: "characters"});
+    constructor(options)
+    {
+        super({widgetId: "characters"});
     }
-   /**
+
+    /**
     * Default Application options
     *
     * @returns {object} options - Application options.
     * @see https://foundryvtt.com/api/Application.html#options
     */
-   static get defaultOptions()
-   {
-      return foundry.utils.mergeObject(super.defaultOptions, {
-         width: 'auto',
-         height: 'auto',
-         resizable: false,
-         minimizable: false,
-         headerButtonNoClose: true,
-         popOut: false,
-        zIndex: 95,
+    static get defaultOptions()
+    {
+        return foundry.utils.mergeObject(super.defaultOptions, {
+            width: 'auto',
+            height: 'auto',
+            resizable: false,
+            minimizable: false,
+            headerButtonNoClose: true,
+            popOut: false,
+            zIndex: 95,
 
-         svelte: {
-            class: CharactersWidget,
-            target: document.body,
-            props: function()
-            {
-               return {
-                            settingStore: this.getPositionStore(),
-                        };
+            svelte: {
+                class: TokensWidget,
+                target: document.body,
+                props: function()
+                {
+                    return {
+                        settingStore: this.getPositionStore(),
+                        store: charactersStore,
+                        hideHP: false,
+                        widgetId: this.widgetId,
+                        placeholderText: "Please place characters tokens on the scene."
+                    };
+                }
             }
-         }
-      });
-   }
+        });
+    }
 
     installHooks() {
-      for (let hook of this.#HOOKS) {
-          Hooks.on(hook, this.onUpdateTokens.bind(this));
-      }
+        for (let hook of this.#HOOKS) {
+            Hooks.on(hook, this.onUpdateTokens.bind(this));
+        }
+
+        Hooks.on("canvasInit", () => {
+	        Hooks.once("renderCombatTracker", this.onUpdateTokens.bind(this));
+        });
     }
 
     async refresh() {
         await super.refresh();
-        if (!this.svelte.applicationShell) return;
-        this.svelte.applicationShell.characters = [];
-        setTimeout(this.onUpdateTokens.bind(this), 0);
     }
 
     onUpdateTokens()
     {
-        if(!this.enabled) return;
+        // if(!this.enabled) return;
+        this.svelte.applicationShell.widgetId = this.widgetId;
         const chars = canvas.tokens.ownedTokens
                 .filter(t => t.document.actor.type === 'character' && isLiving(t));
+        logger.info("characters update", chars);
         chars.sort(
             (a, b) => {
                 if (a.id < b.id) {

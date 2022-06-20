@@ -20,6 +20,8 @@ export const SETTINGS = {
     VE_INTEGRATION: "ve-integration",
     UI_SCALE: "ui-scale",
     SHOW_MASS: "show-mass",
+    ITEM_COUNT_LIST: "item-count-list",
+    SHOW: "show",
 
     SHOW_PREFIX: "show",
     POSITION_PREFIX: "widget-position",
