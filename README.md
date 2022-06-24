@@ -19,9 +19,9 @@ In addition, it tested and somewhat supported with Pathfinder and Pathfinder 2e.
 * Tagger
 
 ## TODO:
-[ ] More settings
-[ ] Non-GM mode
-[ ] Combat widget
+- [ ] More settings
+- [ ] Non-GM mode
+- [ ] Combat widget
 
 ## Attribution
 It uses some parts from [Party Overview](https://github.com/mclemente/party-overview) module which is licensed under MIT license

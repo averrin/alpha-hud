@@ -6,12 +6,8 @@
     import VisionSegment from "../segments/VisionSegment.svelte"
     import AliveSegment from "../segments/AliveSegment.svelte"
     import CombatSegment from "../segments/CombatSegment.svelte"
-    import DataSegment from "../segments/DataSegment.svelte"
-    import ProgressSegment from "../segments/ProgressSegment.svelte"
-    import HasItemSegment from "../segments/HasItemSegment.svelte"
     import ItemIconSegment from "../segments/ItemIconSegment.svelte"
     import PileSegment from "../segments/PileSegment.svelte"
-    import ProgressValueSegment from "../segments/ProgressValueSegment.svelte"
     import DataProgressSegment from "../segments/DataProgressSegment.svelte"
     import TokenIcon from '../segments/TokenIcon.svelte';
     import CurrencySegment from "../segments/CurrencySegment.svelte"

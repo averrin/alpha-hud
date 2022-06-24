@@ -4,13 +4,6 @@
     import {foundry} from '../../modules/foundry.js';
     import NameSegment from "../segments/NameSegment.svelte"
     import CurrencySegment from "../segments/CurrencySegment.svelte"
-    import VisionSegment from "../segments/VisionSegment.svelte"
-    import AliveSegment from "../segments/AliveSegment.svelte"
-    import DataSegment from "../segments/DataSegment.svelte"
-    import ProgressSegment from "../segments/ProgressSegment.svelte"
-    import HasItemSegment from "../segments/HasItemSegment.svelte"
-    import ItemIconSegment from "../segments/ItemIconSegment.svelte"
-    import PileSegment from "../segments/PileSegment.svelte"
     import ResourceSegment from "../segments/ResourceSegment.svelte"
     import TrackerSegment from "../segments/TrackerSegment.svelte"
     import WeightSegment from "../segments/WeightSegment.svelte"

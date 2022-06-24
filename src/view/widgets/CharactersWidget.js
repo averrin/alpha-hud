@@ -81,7 +81,6 @@ export default class CharactersWidgetApp extends WidgetApp
         this.svelte.applicationShell.widgetId = this.widgetId;
         const chars = canvas.tokens.ownedTokens
                 .filter(t => t.document.actor.type === 'character' && isLiving(t));
-        logger.info("characters update", chars);
         chars.sort(
             (a, b) => {
                 if (a.id < b.id) {

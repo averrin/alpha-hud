@@ -46,7 +46,6 @@ export default class WidgetApp extends SvelteApplication
     }
     async show() {
         this.enabled = game.settings.get(moduleId, `${SETTINGS.SHOW_PREFIX}-${this.widgetId}`);
-        logger.withTag(this.widgetId).info("show", this.enabled);
         if (this.enabled) {
             await this.render(true);
             setTimeout(this.onUpdateTokens.bind(this), 0);

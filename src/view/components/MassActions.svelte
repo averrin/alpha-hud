@@ -35,7 +35,6 @@
 
     let hasTB;
     $: hasTB = typeof globalThis.game.MonksTokenBar !== "undefined";
-    $: logger.info(hasTB)
 </script>
 
 <row style="justify-content: start">
