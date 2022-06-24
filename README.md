@@ -22,6 +22,10 @@ In addition, it tested and somewhat supported with Pathfinder and Pathfinder 2e.
 - [ ] More settings
 - [ ] Non-GM mode
 - [ ] Combat widget
+- [ ] [Director](https://github.com/averrin/director) integrations. Tag colors. Scene widget with something like hotbar.
+
+## Images
+![manual](assets/manual.png)
 
 ## Attribution
 It uses some parts from [Party Overview](https://github.com/mclemente/party-overview) module which is licensed under MIT license
