@@ -2,11 +2,11 @@
    export let elementRoot;
    import '../styles/widgets.scss';
     import {moduleId, SETTINGS} from '../constants.js';
-    import { getContext } from 'svelte';
     import {
           applyPosition,
           draggable } from '@typhonjs-fvtt/runtime/svelte/action';
 
+    import { getContext } from 'svelte';
     const { application } = getContext('external');
     const position = application.position;
     position.scale = game.settings.get(moduleId, SETTINGS.UI_SCALE);

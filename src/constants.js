@@ -23,6 +23,10 @@ export const SETTINGS = {
     ITEM_COUNT_LIST: "item-count-list",
     SHOW: "show",
 
+    SHOW_EXP: "show-exp",
+    SHOW_ENC: "show-enc",
+    SHOW_COINS: "show-coins",
+
     SHOW_PREFIX: "show",
     POSITION_PREFIX: "widget-position",
 };

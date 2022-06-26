@@ -197,6 +197,42 @@ export function initSettings(app) {
       }
     });
 
+    foundry.settings.register(moduleId, SETTINGS.SHOW_EXP, {
+      name: "Show experience",
+      hint: "Show experience in characters info",
+      scope: "client",
+      config: true,
+      type: Boolean,
+      default: true,
+      onChange: value => {
+        app.updateConfig()
+      }
+    });
+
+    foundry.settings.register(moduleId, SETTINGS.SHOW_ENC, {
+      name: "Show encumbrance",
+      hint: "Show encumbrance in characters info",
+      scope: "client",
+      config: true,
+      type: Boolean,
+      default: true,
+      onChange: value => {
+        app.updateConfig()
+      }
+    });
+
+    foundry.settings.register(moduleId, SETTINGS.SHOW_COINS, {
+      name: "Show coins",
+      hint: "Show coins in characters info",
+      scope: "client",
+      config: true,
+      type: Boolean,
+      default: true,
+      onChange: value => {
+        app.updateConfig()
+      }
+    });
+
     foundry.settings.register(moduleId, SETTINGS.UI_SCALE, {
       name: 'UI scale',
       hint: 'If widgets are too big or too small for your display. Requires refresh.',

@@ -43,6 +43,9 @@
     const hpColor = game.settings.get(moduleId, SETTINGS.HP_COLOR);
 
     const showTargets = foundry.settings.get(moduleId, SETTINGS.SHOW_TARGETS);
+    const showExp = foundry.settings.get(moduleId, SETTINGS.SHOW_EXP);
+    const showEnc = foundry.settings.get(moduleId, SETTINGS.SHOW_ENC);
+    const showCoins = foundry.settings.get(moduleId, SETTINGS.SHOW_COINS);
 
 
     const trackers = matchTrackers(token);
@@ -67,13 +70,19 @@
 	        />
             <div class="divider"></div>
 	    {/if}
-	    <div class="info-container cell">
-            <ProgressValueSegment path="details.xp" label="xp" icon="icons/svg/upgrade.svg"/>
-	    </div>
-        <div class="divider"></div>
-	    <CurrencySegment/>
-        <div class="divider"></div>
-	    <WeightSegment/>
+	    {#if showExp}
+	        <div class="info-container cell">
+                <ProgressValueSegment path="details.xp" label="xp" icon="icons/svg/upgrade.svg"/>
+	        </div>
+            <div class="divider"></div>
+	    {/if}
+	    {#if showCoins}
+	        <CurrencySegment/>
+            <div class="divider"></div>
+	    {/if}
+	    {#if showEnc}
+	        <WeightSegment/>
+	    {/if}
 	</row>
 	<row>
 	    {#if isAlive(token)}
