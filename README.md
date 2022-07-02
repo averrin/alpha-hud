@@ -17,15 +17,22 @@ In addition, it tested and somewhat supported with Pathfinder and Pathfinder 2e.
 * Token Action HUD
 * Item Collections (Containers)
 * Tagger
+* Director
 
 ## TODO:
 - [ ] More settings
 - [ ] Non-GM mode
 - [ ] Combat widget
-- [ ] [Director](https://github.com/averrin/director) integrations. Tag colors. Scene widget with something like hotbar.
+- [ ] [Director](https://github.com/averrin/director) integrations. Scene widget with something like hotbar.
 
-## Images
+## Hints
 ![manual](assets/manual.png)
+
+- You can [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/averrin)
+
+## My modules
+- [Director](https://github.com/averrin/director)
+- [Merchant Control](https://github.com/averrin/merchant-control)
 
 ## Attribution
 It uses some parts from [Party Overview](https://github.com/mclemente/party-overview) module which is licensed under MIT license
