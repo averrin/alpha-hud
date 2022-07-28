@@ -42,7 +42,7 @@ Hooks.once('ready', async () => {
 
     app.add(new SelectedWidgetApp());
     app.add(new CharactersWidgetApp());
-    if (globalThis.game.modules.get("director").active) {
+    if (globalThis.game.modules.get("director")?.active) {
       app.add(new DirectorWidgetApp());
     }
     await app.start();
