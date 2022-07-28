@@ -6,12 +6,12 @@
    let state;
    const unsubscribe = tokenStore.subscribe((value) => {
       token = value;
-      state = token.document.data.hidden;
+      state = token.document.hidden || token.document.data.hidden;
    });
    onDestroy(unsubscribe);
 
    function toggleVisibility() {
-      token.document.update({ hidden: !token.document.data.hidden });
+      token.document.update({ hidden: !state });
    }
 </script>
 

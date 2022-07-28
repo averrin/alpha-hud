@@ -21,7 +21,7 @@
    import { writable } from "svelte/store";
    import { targetsStore } from "../../modules/stores.js";
 
-   const itemsToFind = JSON.parse(globalThis.game.settings.get(moduleId, SETTINGS.ITEM_DETECT_LIST));
+   const itemsToFind = globalThis.game.settings.get(moduleId, SETTINGS.ITEM_DETECT_LIST);
    const hasPiles = typeof window.ItemPiles !== "undefined";
    const hpColor = game.settings.get(moduleId, SETTINGS.HP_COLOR);
    const showTargets = globalThis.game.settings.get(moduleId, SETTINGS.SHOW_TARGETS);
@@ -45,7 +45,7 @@
    $: if (globalThis.Tagger) tags = Tagger.getTags(token).filter((t) => t != "");
    let tagColors = {};
    if (globalThis.Director) {
-      tagColors = JSON.parse(globalThis.game.settings.get("director", "tag-colors"));
+      tagColors = globalThis.game.settings.get("director", "tag-colors");
    }
 
    let owner = globalThis.game.user;
@@ -120,16 +120,20 @@
             </div>
          {/if}
       </row>
-      {#if tags.length > 0}
-         <row class="tags-row">
-            <div>
-               {#each tags as tag}
-                  <span class="tag" style:background-color={tagColors[tag]} style:color={contrastColor(tagColors[tag])}
-                     >{tag}</span
-                  >
-               {/each}
-            </div>
-         </row>
+      {#if tags}
+         {#if tags.length > 0}
+            <row class="tags-row">
+               <div>
+                  {#each tags as tag}
+                     <span
+                        class="tag"
+                        style:background-color={tagColors[tag]}
+                        style:color={contrastColor(tagColors[tag])}>{tag}</span
+                     >
+                  {/each}
+               </div>
+            </row>
+         {/if}
       {/if}
    </item>
 {/if}

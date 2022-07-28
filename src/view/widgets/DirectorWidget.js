@@ -1,28 +1,17 @@
 import { SvelteApplication } from '@typhonjs-fvtt/runtime/svelte/application';
 
-import TokensWidget from './TokensWidget.svelte';
+import DirectorWidget from './DirectorWidget.svelte';
 import WidgetApp from '../Widget.js';
-import { charactersStore, targetsStore } from '../../modules/stores.js';
-import { isLiving, logger } from "../../modules/helpers.js";
+import { directorActionsStore } from '../../modules/stores.js';
 
-export default class CharactersWidgetApp extends WidgetApp {
+export default class DirectorWidgetApp extends WidgetApp {
   #HOOKS = [
-    'updateToken',
-    'updateActor',
-    'targetToken',
-    'createCombatant',
-    'deleteCombatant',
-
-    'canvasReady',
-    'createToken',
-    'deleteToken',
-    'deleteActor',
-
-    'updateItem',
+    'DirectorUpdateActions',
   ];
 
   constructor(options) {
-    super({ widgetId: "characters" });
+    super({ widgetId: "directorWidget" });
+    logger.info("director widget js");
   }
 
   /**
@@ -42,15 +31,13 @@ export default class CharactersWidgetApp extends WidgetApp {
       zIndex: 95,
 
       svelte: {
-        class: TokensWidget,
+        class: DirectorWidget,
         target: document.body,
         props: function() {
           return {
             settingStore: this.getPositionStore(),
-            store: charactersStore,
-            hideHP: false,
             widgetId: this.widgetId,
-            placeholderText: "Please place characters tokens on the scene."
+            actions: directorActionsStore,
           };
         }
       }
@@ -71,24 +58,16 @@ export default class CharactersWidgetApp extends WidgetApp {
     await super.refresh();
   }
 
-  onUpdateTokens() {
+  onUpdateTokens(actions) {
     // if(!this.enabled) return;
     if (this.svelte.applicationShell) {
       this.svelte.applicationShell.widgetId = this.widgetId;
     }
-    const chars = canvas.tokens.ownedTokens
-      .filter(t => t.document.actor.type === 'character' && isLiving(t));
-    chars.sort(
-      (a, b) => {
-        if (a.id < b.id) {
-          return -1;
-        } else if (a.id > b.id) {
-          return 1;
-        }
-        return 0;
-      }
-    );
-    charactersStore.set(chars);
-    targetsStore.set(game.user.targets);
+    if (actions) {
+      directorActionsStore.set(actions);
+    } else {
+      directorActionsStore.set((canvas.scene?.flags || canvas.scene?.data.flags)["director-actions"]);
+    }
   }
 }
+

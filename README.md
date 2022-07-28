@@ -23,7 +23,7 @@ In addition, it tested and somewhat supported with Pathfinder and Pathfinder 2e.
 - [ ] More settings
 - [ ] Non-GM mode
 - [ ] Combat widget
-- [ ] [Director](https://github.com/averrin/director) integrations. Scene widget with something like hotbar.
+- [X] [Director](https://github.com/averrin/director) integrations. Scene widget with something like hotbar.
 
 ## Hints
 ![manual](assets/manual.png)
