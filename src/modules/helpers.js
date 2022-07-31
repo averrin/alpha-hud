@@ -1,6 +1,9 @@
 import { moduleId, SETTINGS } from '../constants.js';
 import consola from 'consola/src/browser'
 
+export let setting = key => {
+  return game.settings.get(moduleId, key);
+};
 
 export function hasTrackers() {
   const showTracking = game.settings.get(moduleId, SETTINGS.SHOW_TRACKING);
@@ -22,7 +25,9 @@ export function matchTrackers(token) {
 export function hasResourceIcons(token) {
   const showRI = game.settings.get(moduleId, SETTINGS.SHOW_RESOURCE_ICONS);
   if (!showRI) return false;
-  const data = token.document.data.flags["resource-icons"];
+  let flags = token.document.flags;
+  if (!flags) flags = token.document.data.flags
+  const data = flags["resource-icons"];
   if (!data) return false;
   if (data.icon1.resource !== '') return true;
   if (data.icon2.resource !== '') return true;
@@ -51,4 +56,16 @@ export function findItems(token, itemsToFind) {
     items.push(...i2);
   }
   return items;
+}
+
+export let thumbs = {};
+export async function updateThumb(obj) {
+  const img = obj.document.texture?.src || obj.data.img;
+  if (!(img in thumbs)) {
+    const thumb = await ImageHelper.createThumbnail(img, {
+      width: setting(SETTINGS.RESOLUTION),
+      height: setting(SETTINGS.RESOLUTION),
+    });
+    thumbs[img] = thumb.thumb;
+  }
 }

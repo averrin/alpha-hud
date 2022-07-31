@@ -2,8 +2,6 @@
 
 <script>
    import { onDestroy } from "svelte";
-   import { moduleId, SETTINGS } from "../../constants.js";
-   import { logger } from "../../modules/helpers.js";
    import Widget from "../Widget.svelte";
    import FaPlay from "svelte-icons/fa/FaPlay.svelte";
    import { loadIcon } from "iconify-icon";
@@ -36,22 +34,29 @@
 
 <Widget bind:elementRoot {settingStore} {widgetId}>
    <div class="ui-flex ui-flex row ui-gap-2">
-      {#each currentActions as item (item.id)}
-         <button
-            class="ui-btn ui-btn-square"
-            on:pointerdown|preventDefault|stopPropagation={() => null}
-            on:click={(e) => run(e, item)}
-            style:background-color={item.color}
-            style:color={contrastColor(item.color)}
-            class:!ui-p-[8px]={!item.icon}
-            title={item.name}
-         >
-            {#if item.icon}
-               <iconify-icon style:font-size="2rem" icon={item.icon} style:color={contrastColor(item.color)} />
-            {:else}
-               <FaPlay />
-            {/if}
+      {#if currentActions.length > 0}
+         <button class="ui-btn ui-btn-square">
+            <iconify-icon style:font-size="2rem" icon="bx:move" />
          </button>
-      {/each}
+         {#each currentActions as item (item.id)}
+            <button
+               class="ui-btn ui-btn-square"
+               on:pointerdown|preventDefault|stopPropagation={() => null}
+               on:click={(e) => run(e, item)}
+               style:background-color={item.color}
+               style:color={contrastColor(item.color)}
+               class:!ui-p-[8px]={!item.icon}
+               title={item.name}
+            >
+               {#if item.icon}
+                  <iconify-icon style:font-size="2rem" icon={item.icon} style:color={contrastColor(item.color)} />
+               {:else}
+                  <FaPlay />
+               {/if}
+            </button>
+         {/each}
+      {:else}
+         No actions here yet
+      {/if}
    </div>
 </Widget>

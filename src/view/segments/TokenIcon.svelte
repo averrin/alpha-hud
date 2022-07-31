@@ -1,5 +1,6 @@
 <script>
    import { canvas } from "../../modules/foundry.js";
+   import { thumbs, updateThumb } from "../../modules/helpers";
    import { getContext } from "svelte";
    export let token;
    export let player;
@@ -17,6 +18,11 @@
    }
 
    $: targeted = player.targets.has(token);
+   let thumb;
+   (async () => {
+      await updateThumb(token);
+      thumb = thumbs[token.document?.texture?.src || token?.data?.img];
+   })();
 </script>
 
 <button
@@ -26,11 +32,7 @@
    on:pointerdown|preventDefault|stopPropagation={iconAltClick}
    title={token.name || token.data.name}
 >
-   <div
-      class="icon"
-      style="background-image: url({token.document?.texture?.src || token?.data?.img});"
-      style:border={targeted ? `2px solid  ${player.data.color}` : "none"}
-   />
+   <img class="icon" src={thumb} style:border={targeted ? `2px solid  ${player.data.color}` : "none"} />
 </button>
 
 <style lang="scss">

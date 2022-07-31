@@ -23,6 +23,8 @@ export const SETTINGS = {
   ITEM_COUNT_LIST: "item-count-list",
   SHOW: "show",
 
+  RESOLUTION: "resolution",
+
   SHOW_EXP: "show-exp",
   SHOW_ENC: "show-enc",
   SHOW_COINS: "show-coins",

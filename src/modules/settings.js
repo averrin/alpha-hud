@@ -6,10 +6,21 @@ export let setting = key => {
   return game.settings.get(moduleId, key);
 };
 
-function migrateFromString(key) {
-  const current = game.settings.get(moduleId, key);
-  if (typeof current === "string") {
-    game.settings.set(moduleId, key, JSON.parse(current));
+export async function migrateFromString(key) {
+  try {
+    let current = game.settings.get(moduleId, key);
+    if (typeof current === "string" || current instanceof String) {
+      current = JSON.parse(current);
+      await game.settings.set(moduleId, key, current);
+    }
+    if (typeof current[0] === "string" || current[0] instanceof String) {
+      current = JSON.parse(current[0]);
+      if (Array.isArray(current)) {
+        await game.settings.set(moduleId, key, current);
+      }
+    }
+  } catch (error) {
+
   }
 }
 
@@ -260,7 +271,7 @@ export function initSettings(app) {
   });
 
   foundry.settings.register(moduleId, SETTINGS.SHOW_DIRECTOR, {
-    name: "DIrector widget",
+    name: "Director widget",
     hint: "Show widget for Director's actions. Requires the Director module",
     scope: "client",
     config: true,
@@ -269,6 +280,21 @@ export function initSettings(app) {
     onChange: value => {
       app.updateConfig()
     }
+  });
+
+  game.settings.register(moduleId, SETTINGS.RESOLUTION, {
+    name: "Token image resolution",
+    hint: "Higher is better quality but slower",
+    scope: "world",
+    config: true,
+    range: {
+      min: 10,
+      max: 600,
+      step: 5,
+    },
+    default: 50,
+    type: Number,
+    onChange: debouncedReload
   });
 
   foundry.settings.register(moduleId, SETTINGS.SYSTEM_PROVIDER, {
