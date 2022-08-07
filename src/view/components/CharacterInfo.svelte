@@ -56,8 +56,8 @@
 </script>
 
 {#if token}
-   <item>
-      <row>
+   <item class="ui-flex ui-flex-col">
+      <div class="ui-flex ui-flex-row ui-justify-start ui-items-center ui-h-12 ui-justify-around">
          <div class="cell">
             <NameSegment />
          </div>
@@ -79,62 +79,51 @@
          {#if showEnc}
             <WeightSegment />
          {/if}
-      </row>
-      <row>
-         {#if isAlive(token)}
-            <CombatSegment />
-            <AmmoSegment />
-            <div class="divider" />
-         {/if}
-
-         {#each items as item, i}
-            <ItemCountSegment {item} />
-            <div class="divider" />
-         {/each}
-         {#if hasResourceIcons(token)}
-            <div class="resource-icons">
-               <ResourceSegment iconIndex="1" />
-               <ResourceSegment iconIndex="2" />
-               <ResourceSegment iconIndex="3" />
-            </div>
-         {/if}
-
-         {#if trackers.length > 0}
-            {#if hasResourceIcons(token)}
+      </div>
+      <div class="ui-flex ui-flex-row ui-justify-start ui-items-center ui-h-12">
+         <div class="ui-flex ui-flex-row ui-justify-start ui-items-center ui-h-12 ui-flex-1">
+            {#if isAlive(token)}
+               <CombatSegment />
+               <AmmoSegment />
                <div class="divider" />
             {/if}
-            <row style="padding-left: 12px; flex-direction: row-reverse">
-               {#each trackers as tracker, i}
-                  <TrackerSegment color={tracker.color} label={tracker.label} trackerName={tracker.name} />
-                  {#if i != trackers.length - 1}
-                     <div class="divider" />
-                  {/if}
-               {/each}
-            </row>
-         {/if}
-      </row>
-      {#if showTargets && targets.length > 0}
-         <row>
-            <div class="target-icons">
-               <span>Targets:&nbsp;</span>
-               {#each targets as target}
-                  <TokenIcon token={target} player={owner} />
-               {/each}
+
+            {#each items as item, i}
+               <ItemCountSegment {item} />
+               <div class="divider" />
+            {/each}
+            {#if hasResourceIcons(token)}
+               <div class="resource-icons">
+                  <ResourceSegment iconIndex="1" />
+                  <ResourceSegment iconIndex="2" />
+                  <ResourceSegment iconIndex="3" />
+               </div>
+            {/if}
+         </div>
+
+         {#if trackers.length > 0}
+            <div class="ui-flex ui-flex-row ui-justify-start ui-items-center flex-none">
+               {#if hasResourceIcons(token)}
+                  <div class="divider" />
+               {/if}
+               <div class="ui-flex ui-flex-row-reverse">
+                  {#each trackers as tracker, i}
+                     <TrackerSegment color={tracker.color} label={tracker.label} trackerName={tracker.name} />
+                     {#if i != trackers.length - 1}
+                        <div class="divider" />
+                     {/if}
+                  {/each}
+               </div>
             </div>
-         </row>
+         {/if}
+      </div>
+      {#if showTargets && targets.length > 0}
+         <div class="ui-flex ui-flex-row ui-justify-start ui-items-center ui-h-12">
+            <span>Targets:&nbsp;</span>
+            {#each targets as target}
+               <TokenIcon token={target} player={owner} />
+            {/each}
+         </div>
       {/if}
    </item>
 {/if}
-
-<style lang="scss">
-   item:not(:last-child) {
-      border-bottom: 1px solid #eeeeee55;
-      padding-bottom: 6px;
-      margin-bottom: 6px;
-   }
-
-   row div {
-      display: flex;
-      align-items: center;
-   }
-</style>

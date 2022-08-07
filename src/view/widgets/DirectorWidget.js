@@ -48,10 +48,6 @@ export default class DirectorWidgetApp extends WidgetApp {
     for (let hook of this.#HOOKS) {
       Hooks.on(hook, this.onUpdateTokens.bind(this));
     }
-
-    Hooks.on("canvasInit", () => {
-      Hooks.once("renderCombatTracker", this.onUpdateTokens.bind(this));
-    });
   }
 
   async refresh() {

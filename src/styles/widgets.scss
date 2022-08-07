@@ -20,6 +20,10 @@
     box-shadow: 0 0 12px var(--color-shadow-dark);
     overflow: hidden;
 
+    .ui-tooltip::before, .ui-tooltip::after {
+      text-shadow: unset !important;
+  }
+
     .divider:not(:last-child):not(:first-child) {
         border: 1px solid #eeeeee55;
         height: 14px;

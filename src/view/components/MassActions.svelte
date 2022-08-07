@@ -44,7 +44,7 @@
    }
 </script>
 
-<row style="justify-content: start">
+<div class="ui-flex ui-flex-row ui-justify-start ui-mt-2 ui-items-center">
    <button class="icon sq" on:pointerdown|preventDefault|stopPropagation={selectAll} title="Select all | Realise all">
       <i class="fas fa-expand" />
    </button>
@@ -79,4 +79,4 @@
          <i class="fas fa-bed" />
       </button>
    {/if}
-</row>
+</div>

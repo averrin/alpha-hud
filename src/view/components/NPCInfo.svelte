@@ -43,9 +43,9 @@
    $: items = token?.document?.actor?.items.filter((i) => itemsToFind.some((itf) => itf == i.name));
    $: onlySelected = globalThis.canvas.tokens.controlled.length == 1;
    $: if (globalThis.Tagger) tags = Tagger.getTags(token).filter((t) => t != "");
-   let tagColors = {};
+   let tagSpecs = [];
    if (globalThis.Director) {
-      tagColors = globalThis.game.settings.get("director", "tag-colors");
+      tagSpecs = globalThis.game.settings.get("director", "tags");
    }
 
    let owner = globalThis.game.user;
@@ -65,7 +65,7 @@
 
 {#if token}
    <item>
-      <row>
+      <div class="ui-flex ui-flex-row ui-justify-start ui-items-center ui-h-8">
          <NameSegment />
          <div class="divider" />
          {#if !hideHP && globalThis.getProperty(token?.document?.actor.getRollData(), "attributes.hp.max") > 0}
@@ -83,8 +83,8 @@
                <PileSegment />
             {/if}
          </div>
-      </row>
-      <row>
+      </div>
+      <div class="ui-flex ui-flex-row ui-justify-start ui-items-center ui-h-10 ui-ml-2">
          {#if isAlive(token)}
             <NPCLevelSegment />
             {#if (showActions && onlySelected) || items.length > 0}
@@ -119,38 +119,52 @@
                <CurrencySegment />
             </div>
          {/if}
-      </row>
-      {#if tags}
+      </div>
+      {#if tags && globalThis.Director}
          {#if tags.length > 0}
-            <row class="tags-row">
-               <div>
-                  {#each tags as tag}
-                     <span
-                        class="tag"
-                        style:background-color={tagColors[tag]}
-                        style:color={contrastColor(tagColors[tag])}>{tag}</span
-                     >
-                  {/each}
-               </div>
-            </row>
+            <div class="tags-row ui-flex ui-flex-row ui-gap-2 ui-h-10">
+               {#each tags as tag}
+                  <span
+                     class="tag ui-flex ui-items-center"
+                     style:background-color={tagSpecs.find((t) => t.text == tag)?.color}
+                     style:color={contrastColor(tagSpecs.find((t) => t.text == tag)?.color)}
+                  >
+                     {#if tagSpecs.find((t) => t.text == tag)?.icon}
+                        <iconify-icon
+                           style:font-size="1.5rem"
+                           style:margin-right="0.5rem"
+                           icon={tagSpecs.find((t) => t.text == tag)?.icon}
+                           style:color={contrastColor(tagSpecs.find((t) => t.text == tag)?.color)}
+                        />
+                     {/if}
+
+                     {tag}
+                  </span>
+               {/each}
+            </div>
          {/if}
       {/if}
    </item>
 {/if}
 
-<style lang="scss">
-   .button-group {
-      margin: 0 4px;
-   }
+<style>
    .tag {
-      margin-right: 4px;
-      padding: 2px 8px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans",
+         "Droid Sans", "Helvetica Neue", sans-serif;
+      font-size: 1.2rem;
+      padding: 2px 5px;
+
+      display: flex;
+      white-space: nowrap;
+      list-style: none;
+      color: #242424;
+      background: #fff;
+      margin-right: 5px;
+      margin-top: 5px;
       border-radius: 6px;
-      background-color: #eee;
-      color: #232323;
+      font-weight: bold;
+      padding: 2px 8px;
+      height: unset !important;
       text-shadow: none !important;
-   }
-   .tags-row {
-      height: 32px;
    }
 </style>
